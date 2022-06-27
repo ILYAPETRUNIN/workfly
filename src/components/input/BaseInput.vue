@@ -17,11 +17,9 @@
             <slot name="icon-suffix">
                     <transition name="animate-icon">
                       <svg-icon v-if="type=='password'" class="base__input__icon base-input__icon_clicable" :name='`eye${isPassword?"_closed":""}`'/>
-                      <div v-else-if="cleareble" class="base-input__icon base-input__icon_clicable" >
-                        <svg-icon name='close'/>
-                      </div>
+                      <svg-icon v-else-if="cleareble" class="base-input__icon base-input__icon_clicable"  name='close'/>
                       <div v-else-if="getNotify" class="base-input__icon">
-                          <svg-icon :name='getNotify.type'/>
+                          <svg-icon  :name='getNotify.type'/>
                       </div>
                     </transition>
             </slot>
@@ -130,8 +128,8 @@ export default defineComponent({
 </script>
 
 <style scoped lang="stylus">
-@require '~@/assets/stylus/mixins/components/input';
-@require '~@/assets/stylus/vars/components/variables';
+@require '~@/assets/stylus/components/input';
+@require '~@/assets/stylus/vars/variables';
 
 $name='base-input'
 $schemes={
