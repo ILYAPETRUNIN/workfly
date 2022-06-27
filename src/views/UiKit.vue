@@ -6,7 +6,7 @@
                 <base-input name="phone1" label="phone"  type="phone"/>
                 <base-input name="phone2" label="phone" cleareble type="phone"/>
                 <base-input :notification='{type:"danger",text:"Error"}'/>
-                <base-input name="email" label="email" showSuccess :rule="yup.string().required().email()"/>
+                <base-input name="email" :notification='{text:"Please, enter your work e-mail"}' label="email" showSuccess :rule="yup.string().required().email()"/>
                 <base-input :notification='{type:"warning",text:"warning"}'/>
                 <base-input name="password" label="password" :rule="yup.string().required()" type='password'/>
             </div>

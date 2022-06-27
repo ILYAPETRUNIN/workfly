@@ -18,8 +18,8 @@
                     <transition name="animate-icon">
                       <svg-icon v-if="type=='password'" class="base__input__icon base-input__icon_clicable" :name='`eye${isPassword?"_closed":""}`'/>
                       <svg-icon v-else-if="cleareble" class="base-input__icon base-input__icon_clicable"  name='close'/>
-                      <div v-else-if="getNotify" class="base-input__icon">
-                          <svg-icon  :name='getNotify.type'/>
+                      <div v-else-if="getNotify?.type" class="base-input__icon">
+                          <svg-icon :name='getNotify.type'/>
                       </div>
                     </transition>
             </slot>
@@ -88,11 +88,11 @@ export default defineComponent({
     const { errorMessage, value } = useValidation(props.name, props.rule)
 
     const getNotify = computed(() => {
-      return props.notification
-        ? new Notify({ text: props.notification.text, type: props.notification.type })
-        : errorMessage.value
-          ? new Notify({ text: errorMessage.value, type: 'danger' })
-          : !errorMessage.value && props.showSuccess && value.value ? new Notify({ text: '', type: 'success' }) : null
+      return errorMessage.value
+        ? new Notify({ text: errorMessage.value, type: 'danger' })
+        : !errorMessage.value && props.showSuccess && value.value
+            ? new Notify({ text: '', type: 'success' })
+            : props.notification ? new Notify({ text: props.notification.text, type: props.notification.type }) : null
     })
 
     const getClass = computed(() => {
