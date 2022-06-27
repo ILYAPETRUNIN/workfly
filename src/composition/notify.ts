@@ -3,7 +3,7 @@ export interface NotifyInterface{
   type:string
 }
 
-export class Notify implements NotifyInterface {
+export default class Notify implements NotifyInterface {
   text?:string;
   type:string;
   constructor (args:NotifyInterface) {

@@ -1,0 +1,104 @@
+@require '~@/assets/stylus/mixins/flex.styl';
+@require '~@/assets/stylus/mixins/size.styl';
+@require '~@/assets/stylus/mixins/fonts.styl';
+@require '~@/assets/stylus/base/animation/animations.styl';
+
+generateDefault($name)
+  .{$name}
+    size(100%,100%)
+    &__name
+      setFont(500,normal,15px)
+      margin-bottom 8px
+      text-transform: capitalize
+    &__input
+      outline none
+      border none
+      size(100%,100%)
+      color currentColor
+      font-size 16px
+      &_password
+        font-weight bold
+    &__suffix
+      flexy(center,center)
+      size(24px,24px)
+    &__wrapper
+      flexy(space-between,center)
+      border: 2px solid
+      border-radius: 12px;
+      padding 16px 20px
+      cursor text
+      transition all 0.5s
+    &__notify
+      setFont(400,normal,14px)
+      text-transform: capitalize
+      margin-top 5px
+      height 17.5px
+    &__icon
+      flexy(center,center)
+      size(22px,22px)
+      padding 3px
+      border: 2px solid
+      border-radius 100%
+      transition all 0.7s
+      &_clicable
+        cursor pointer
+    
+
+setTheme($name,$theme)
+  $states="danger","success","warning"
+  $color-focus=$theme.base.contrast
+  $color-unfocus=darken($theme.base.base,10)
+  
+
+  for state in $states
+    &.{state}
+      &.focused
+        .{$name}
+          &__wrapper
+            border-color $theme.base[state]
+          &__icon
+            color:$theme.base[state]
+      .{$name}
+        &__wrapper
+          border-color lighten($theme.base[state],30)
+          opacity 1
+        &__notify
+          color:$theme.base[state]
+        &__icon
+          color:lighten($theme.base[state],30)
+          svg
+            color:$theme.base[state]
+            fill $theme.base[state]
+            stroke $theme.base[state]
+
+  
+  
+  
+  .{$name}
+    &__name
+      color:$theme.optional.header-color
+    &__wrapper
+      border-color $color-unfocus
+      color $color-unfocus
+    &__notify
+      color:darken($theme.base.base,30)
+    &__icon
+      &_clicable
+        color $color-focus
+  &.focused
+    .{$name}__wrapper
+      border-color $color-focus
+      color  $color-focus
+
+setAnimation($name,$nameAnimate,$dir,$duration,$params=linear)
+  .{$name}-{$dir}
+    setAnimate($nameAnimate,$duration,$params,both)
+
+
+
+
+  
+
+
+
+  

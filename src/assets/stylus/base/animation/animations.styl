@@ -1,0 +1,11 @@
+@require'./bounce-in-right.styl'
+@require'./shake-horizontal.styl'
+@require'./slide-out-right.styl'
+@require'./fade-out.styl'
+
+
+
+setAnimate($name,$duration,$dir,$params=linear){
+    -webkit-animation: $name $duration $params $dir;
+	  animation: $name $duration $dir;
+}
