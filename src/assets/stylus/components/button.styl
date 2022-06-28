@@ -1,0 +1,68 @@
+@require '~@/assets/stylus/mixins/flex.styl';
+@require '~@/assets/stylus/mixins/size.styl';
+generateDefault($name)
+  .{$name}
+    size(100%,100%)
+    flexy(center,center)
+    outline none
+    border none
+    cursor pointer
+    border-radius 10px
+    padding 16px 32px
+    border 2px solid
+    font-weight: 500;
+    font-size: 16px;
+  &.disabled
+    opacity: 0.4;
+    cursor auto
+  &.icon
+    flexy(center,center)
+    border-radius 100%
+  &.plain
+    border none
+
+setTheme($name,$theme)
+  &.{$name}
+    background $theme.base.contrast
+    color $theme.base.base
+  &.outlined
+    background $theme.base.base
+    border-color $theme.base.contrast
+    color $theme.base.contrast
+  &.plain
+    background none
+    color $theme.base.contrast
+  &.icon
+    &.outlined
+      border-color darken($theme.base.base,30%)
+
+
+setSize($name)
+  &.icon
+    &.lg
+      width 40px
+      height 40px
+      padding 12px
+    &.sm
+      width 20px
+      height 20px
+      padding 5px
+  &.plain
+    &.sm
+      padding 0px
+  &.outlined
+    &.lg
+      padding 10px
+
+      
+
+    
+
+
+  
+  
+  
+
+
+
+  

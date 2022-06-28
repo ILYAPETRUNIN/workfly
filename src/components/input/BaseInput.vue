@@ -141,7 +141,7 @@ $schemes={
   }
 }
 
-generateDefault($name,$schemes[$key])
+generateDefault($name)
 
 for $key in $schemes
   .{$key}
