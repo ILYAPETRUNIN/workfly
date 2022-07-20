@@ -19,24 +19,19 @@ export function useFocus () {
   const input = ref()
 
   const focus = () => {
+    focused.value = true
     input.value.focus()
   }
 
-  return { focused, input, focus }
+  const unfocus = () => {
+    focused.value = false
+    input.value.blur()
+  }
+
+  return { focused, input, focus, unfocus }
 }
 
-export function useSync (props:any, context:any) {
-  return computed({
-    get () {
-      return props.modelValue
-    },
-    set (val) {
-      context.emit('update:modelValue', val)
-    }
-  })
-}
-
-export function useValidation (name:any, rule:any) {
-  const { errorMessage, value } = useField(name, rule)
-  return { errorMessage, value }
+export function useSync (props:any) {
+  const { value, errorMessage } = useField(props.name, props.rule)
+  return { value, errorMessage }
 }

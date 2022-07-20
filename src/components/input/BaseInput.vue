@@ -5,21 +5,20 @@
           <slot name="icon-prefix"></slot>
             <input
             v-model='value'
-            @input="update"
             v-maska="mask"
-            :type='isPassword ? "password":"text"'
+            :type='visible ? "password":"text"'
             ref="input"
-            @focus="focused = true"
-            @blur="focused = false"
-            :class="{'base-input__input_password':isPassword}"
+            @focus="focus"
+            @blur="unfocus"
+            :class="{'base-input__input_password':visible}"
             class="base-input__input"/>
           <div @click="clickSuffix" class="base-input__suffix">
             <slot name="icon-suffix">
                     <transition name="animate-icon">
-                      <svg-icon v-if="type=='password'" class="base__input__icon base-input__icon_clicable" :name='`eye${isPassword?"_closed":""}`'/>
+                      <svg-icon v-if="type=='password'" class="base__input__icon base-input__icon_clicable" :name='`eye${visible?"_closed":""}`'/>
                       <svg-icon v-else-if="cleareble" class="base-input__icon base-input__icon_clicable"  name='close'/>
-                      <div v-else-if="getNotify?.type" class="base-input__icon">
-                          <svg-icon :name='getNotify.type'/>
+                      <div v-else-if="notify?.type" class="base-input__icon">
+                          <svg-icon :name='notify.type'/>
                       </div>
                     </transition>
             </slot>
@@ -27,15 +26,15 @@
 
         </div>
         <div class="base-input__notify">
-          <transition name="animate-notify">
-            <p :class="getNotify.type" class="shake-horizontal" v-if="getNotify">{{getNotify.text}}</p>
-          </transition>
+          <Transition name="animate-notify">
+            <p class="base-input__notify" :class="notify.type"  v-if="notify">{{notify.text}}</p>
+          </Transition>
         </div>
     </div>
 </template>
 
 <script lang="ts">
-import maska, { useMask, useFocus, useValidation } from '@/composition/input'
+import maska, { useMask, useFocus, useSync } from '@/composition/input'
 import Notify, { NotifyInterface } from '@/composition/notify'
 
 import { defineComponent, PropType, computed, ref } from 'vue'
@@ -68,60 +67,62 @@ export default defineComponent({
     customMask: {
       type: String
     },
-    rule: {
-      type: Object
-    },
     notification: {
       type: Object as PropType<NotifyInterface>
     },
     showSuccess: {
       type: Boolean
+    },
+    theme: {
+      type: String,
+      default: 'light'
+    },
+    rule: {
+      type: Object
     }
 
   },
 
-  setup (props, context) {
-    const isPassword = ref()
+  setup (props) {
+    const visible = ref()
 
     const mask = useMask(props.type)
-    const { focused, input, focus } = useFocus()
-    const { errorMessage, value } = useValidation(props.name, props.rule)
+    const { focused, input, focus, unfocus } = useFocus()
 
-    const getNotify = computed(() => {
-      return errorMessage.value
-        ? new Notify({ text: errorMessage.value, type: 'danger' })
-        : !errorMessage.value && props.showSuccess && value.value
-            ? new Notify({ text: '', type: 'success' })
-            : props.notification ? new Notify({ text: props.notification.text, type: props.notification.type }) : null
+    const { value, errorMessage } = useSync(props)
+
+    const notify = computed(() => {
+      return props.notification
+        ? new Notify({ text: props.notification.text, type: props.notification.type })
+        : errorMessage.value
+          ? new Notify({ text: errorMessage.value, type: 'danger' })
+          : (props.showSuccess && value.value) ? new Notify({ type: 'success' }) : null
     })
 
     const getClass = computed(() => {
       return [
         focused.value ? 'focused' : '',
-        getNotify.value ? `${getNotify.value.type}` : ''
+        notify.value ? `${notify.value.type}` : '',
+        props.theme ? props.theme : ''
       ]
     })
 
     const clickSuffix = () => {
-      if (props.type === 'password') isPassword.value = !isPassword.value
+      if (props.type === 'password') visible.value = !visible.value
       else if (props.cleareble) value.value = undefined
     }
 
-    const update = (event:any) => {
-      context.emit('update:modelValue', event.target.value)
-    }
-
     return {
-      focused,
       input,
       getClass,
       focus,
-      isPassword,
+      unfocus,
+      visible,
       mask,
       clickSuffix,
-      getNotify,
+      notify,
       value,
-      update
+      errorMessage
     }
   }
 })
@@ -145,11 +146,11 @@ generateDefault($name)
 
 for $key in $schemes
   .{$key}
-    setTheme($name,$schemes[$key])
+   setTheme($name,$schemes[$key])
 
-setAnimation('animate-icon','bounce-in-right','enter-active',1.1s)
-setAnimation('animate-icon','slide-out-right','leave-active',0.5s,cubic-bezier(0.550, 0.085, 0.680, 0.530))
-setAnimation('animate-notify','shake-horizontal','enter',1.1s,cubic-bezier(0.550, 0.085, 0.680, 0.530))
-setAnimation('animate-notify','fade-out','leave-active',0.5s,ease-out)
+   setAnimation('animate-icon',bounce-in-right,'enter',1.1s)
+   setAnimation('animate-icon',slide-out-right,'leave',0.5s,cubic-bezier(0.550, 0.085, 0.680, 0.530))
+   setAnimation('animate-notify',shake-horizontal,'enter',1.1s,cubic-bezier(0.550, 0.085, 0.680, 0.530))
+   setAnimation('animate-notify',fade-out,'leave',0.5s,ease-out)
 
 </style>

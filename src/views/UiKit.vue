@@ -2,12 +2,10 @@
     <div>
         <div class="ui-block">
             <div >
-                <base-input name="phone1" label="phone"  type="phone"/>
-                <base-input name="phone2" label="phone" cleareble type="phone"/>
-                <base-input :notification='{type:"danger",text:"Error"}'/>
-                <base-input name="email" :notification='{text:"Please, enter your work e-mail"}' label="email" showSuccess :rule="yup.string().required().email()"/>
-                <base-input :notification='{type:"warning",text:"warning"}'/>
-                <base-input name="password" label="password" :rule="yup.string().required()" type='password'/>
+                <base-input name="email" v-model="email" label="email" showSuccess/>
+                <base-input name="phone" v-model="phone" label="phone" type='phone'/>
+                <base-input name="password" v-model="password" label="password" type='password'/>
+                <base-input name="text" v-model="text" label="text" cleareble/>
             </div>
             <div class="ui-block__column">
               <div class="ui-block__row">
@@ -22,6 +20,9 @@
                 <base-btn icon iconName='eye' plain size='sm'/>
               </div>
             </div>
+            <div>
+              <base-code v-model='code'/>
+            </div>
         </div>
     </div>
 </template>
@@ -35,22 +36,27 @@ import { useForm } from 'vee-validate'
 export default defineComponent({
   name: 'UiKit',
   setup () {
-    const formValues = {
-      email: 'example@example.com',
-      phone1: 7912321,
-      phone2: 7912321
-    }
+    const code = ref()
+    const email = ref()
+    const phone = ref()
+    const password = ref()
+    const text = ref()
+
+    const schema = yup.object({
+      email: yup.string().required().email(),
+      phone: yup.string().required(),
+      password: yup.string().required()
+    })
 
     useForm({
-      initialValues: formValues
-
+      validationSchema: schema
     })
 
     const form = ref({
       input: ''
     })
 
-    return { form, yup }
+    return { form, code, email, phone, password, text }
   }
 })
 </script>

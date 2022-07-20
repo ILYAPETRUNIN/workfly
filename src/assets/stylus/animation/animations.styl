@@ -5,7 +5,7 @@
 
 
 
-setAnimate($name,$duration,$dir,$params=linear){
+setAnimate($name,$duration,$params=linear,$dir){
     -webkit-animation: $name $duration $params $dir;
-	  animation: $name $duration $dir;
+	  animation: $name $duration $params $dir;
 }

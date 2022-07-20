@@ -1,0 +1,48 @@
+@require '~@/assets/stylus/mixins/flex.styl';
+@require '~@/assets/stylus/mixins/size.styl';
+@require '~@/assets/stylus/mixins/fonts.styl';
+
+generateDefault($name)
+  .{$name}
+    flexy(center,center)
+    width 100%
+    &__input
+      width 108px
+      height 156px
+      text-align: center
+      font-size 72px
+      outline none
+      border-radius: 80px
+      border 2px solid
+      &:not(:last-child)
+        margin-right 16px
+    &__line
+      width: 16px;
+      height 1px
+      margin-right 16px
+
+
+setTheme($name,$theme)
+  $color-focus=$theme.base.contrast
+  $color-unfocus=darken($theme.base.base,10)
+  .{$name}
+    &__input
+      border-color $color-unfocus
+      &:focus
+        border-color $color-focus
+    &__line
+      background: $color-focus
+  
+
+  
+  
+  
+
+    
+
+
+  
+
+
+
+  

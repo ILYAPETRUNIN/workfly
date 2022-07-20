@@ -7,7 +7,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType, computed, ref } from 'vue'
+import { defineComponent, computed } from 'vue'
 
 export default defineComponent({
   name: 'Base-btn',
@@ -43,7 +43,7 @@ export default defineComponent({
     }
   },
 
-  setup (props, context) {
+  setup (props) {
     const getClass = computed(() => {
       return [
         props.theme,
