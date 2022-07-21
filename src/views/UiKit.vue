@@ -1,9 +1,9 @@
 <template>
     <div>
         <div class="ui-block">
-            <div >
+            <div>
                 <base-input name="email" v-model="email" label="email" showSuccess/>
-                <base-input name="phone" v-model="phone" label="phone" type='phone'/>
+                <base-input name="phone" v-model="phone" label="phone" type='phone' sample/>
                 <base-input name="password" v-model="password" label="password" type='password'/>
                 <base-input name="text" v-model="text" label="text" cleareble/>
             </div>

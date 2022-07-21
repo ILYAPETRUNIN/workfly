@@ -1,15 +1,15 @@
 <template>
     <div :class="getClass" class="base-code">
-      <input class="base-code__input" ref='code0' type="number" v-model='code[0]' min='1'/>
-      <input class="base-code__input" ref='code1' type="number" v-model='code[1]' min='1'/>
+      <input @focus="setFocus" ref="input0" class="base-code__input" type="number" v-model='code[0]' min="0" max="9"/>
+      <input @focus="setFocus" ref="input1" class="base-code__input" type="number" v-model='code[1]'/>
       <div class="base-code__line"/>
-      <input class="base-code__input" ref='code2' type="number" v-model='code[2]' min='1'/>
-      <input class="base-code__input" ref='code3' type="number" v-model='code[3]' min='1'/>
+      <input @focus="setFocus" ref="input2" class="base-code__input" type="number" v-model='code[2]' min="0" max="9"/>
+      <input @focus="setFocus" ref="input3" class="base-code__input" type="number" v-model='code[3]' min="0" max="9"/>
     </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, ref } from 'vue'
+import { defineComponent, computed, ref, watch } from 'vue'
 
 export default defineComponent({
   name: 'Base-code',
@@ -28,10 +28,46 @@ export default defineComponent({
     }
   },
 
-  setup (props) {
+  setup (props, context) {
     const code = ref(['', '', '', ''])
+    const input0 = ref()
+    const input1 = ref()
+    const input2 = ref()
+    const input3 = ref()
 
     const currentIndex = computed(() => code.value.findIndex((item) => item === ''))
+
+    const reset = () => {
+      code.value = ['', '', '', '']
+    }
+
+    const setFocus = () => {
+      switch (currentIndex.value) {
+        case 0:
+          input0.value.focus()
+          break
+        case 1:
+          input1.value.focus()
+          break
+        case 2:
+          input2.value.focus()
+          break
+        case 3:
+          input3.value.focus()
+          break
+        default:
+          input0.value.blur()
+          input1.value.blur()
+          input2.value.blur()
+          input3.value.blur()
+          break
+      }
+    }
+
+    watch(currentIndex, (value) => {
+      setFocus()
+      if (value === -1) context.emit('update:modelValue', code.value.join(''))
+    })
 
     const getClass = computed(() => {
       return [
@@ -41,8 +77,14 @@ export default defineComponent({
 
     return {
       code,
+      setFocus,
+      reset,
       getClass,
-      currentIndex
+      currentIndex,
+      input0,
+      input1,
+      input2,
+      input3
     }
   }
 })

@@ -14,6 +14,20 @@ export function useMask (type:string | undefined) {
   })
 }
 
+export function useSample (props:any) {
+  return computed(() => {
+    if (props.type === 'phone') {
+      const pattern = '+1 (000) 000-0000'
+      if (props.modelValue) {
+        const numSymbol = props.modelValue.length
+        return ' '.repeat(numSymbol) + pattern.substring(numSymbol)
+      }
+      return pattern
+    }
+    return null
+  })
+}
+
 export function useFocus () {
   const focused = ref(false)
   const input = ref()

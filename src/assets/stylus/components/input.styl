@@ -18,6 +18,9 @@ generateDefault($name)
       font-size 16px
       &_password
         font-weight bold
+    &__placeholder
+      position:absolute
+      font-size 16.5px
     &__suffix
       flexy(center,center)
       size(24px,24px)
@@ -77,6 +80,8 @@ setTheme($name,$theme)
   .{$name}
     &__name
       color:$theme.optional.header-color
+    &__placeholder
+      color:darken($theme.base.base,30)
     &__wrapper
       border-color $color-unfocus
       color $color-unfocus

@@ -1,9 +1,13 @@
 <template>
     <div :class="getClass" class="base-input light">
-        <p class="base-input__name">{{label}}<span v-if="required">*</span></p>
+        <div class="base-input__name">
+          <label :for="name">{{label}}<span v-if="required">*</span></label>
+        </div>
         <div @click="focus" class="base-input__wrapper">
           <slot name="icon-prefix"></slot>
+            <pre v-if="sample" class="base-input__placeholder">{{getSample}}</pre>
             <input
+            :id="name"
             v-model='value'
             v-maska="mask"
             :type='visible ? "password":"text"'
@@ -34,7 +38,7 @@
 </template>
 
 <script lang="ts">
-import maska, { useMask, useFocus, useSync } from '@/composition/input'
+import maska, { useMask, useFocus, useSync, useSample } from '@/composition/input'
 import Notify, { NotifyInterface } from '@/composition/notify'
 
 import { defineComponent, PropType, computed, ref } from 'vue'
@@ -79,6 +83,9 @@ export default defineComponent({
     },
     rule: {
       type: Object
+    },
+    sample: {
+      type: Boolean
     }
 
   },
@@ -87,6 +94,7 @@ export default defineComponent({
     const visible = ref()
 
     const mask = useMask(props.type)
+
     const { focused, input, focus, unfocus } = useFocus()
 
     const { value, errorMessage } = useSync(props)
@@ -107,6 +115,8 @@ export default defineComponent({
       ]
     })
 
+    const getSample = props.sample ? useSample(props) : null
+
     const clickSuffix = () => {
       if (props.type === 'password') visible.value = !visible.value
       else if (props.cleareble) value.value = undefined
@@ -122,7 +132,8 @@ export default defineComponent({
       clickSuffix,
       notify,
       value,
-      errorMessage
+      errorMessage,
+      getSample
     }
   }
 })
