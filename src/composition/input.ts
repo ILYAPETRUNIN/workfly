@@ -1,51 +1,150 @@
 import { maska } from 'maska'
 import { useField } from 'vee-validate'
-import { computed, ref } from 'vue'
+import { computed, ref, PropType } from 'vue'
+import Notify, { NotifyInterface } from '@/composition/notify'
 export default maska
 
-export function useMask (type:string | undefined) {
-  return computed(() => {
-    switch (type) {
-      case 'phone':
-        return '+# (###) ###-####'
-        break
-    }
-    return null
-  })
+interface InputOption{
+  name:string,
+  params?:any
 }
 
-export function useSample (props:any) {
-  return computed(() => {
-    if (props.type === 'phone') {
-      const pattern = '+1 (000) 000-0000'
-      if (props.modelValue) {
-        const numSymbol = props.modelValue.length
-        return ' '.repeat(numSymbol) + pattern.substring(numSymbol)
+export const props = {
+  modelValue: {
+    type: String
+  },
+  name: {
+    type: String,
+    default: 'name'
+  },
+  label: {
+    type: String
+  },
+  required: {
+    type: Boolean,
+    default: false
+  },
+  type: {
+    type: String
+  },
+  cleareble: {
+    type: Boolean
+  },
+  customMask: {
+    type: String
+  },
+  notification: {
+    type: Object as PropType<NotifyInterface>
+  },
+  showSuccess: {
+    type: Boolean
+  },
+  theme: {
+    type: String,
+    default: 'light'
+  },
+  rule: {
+    type: Object
+  },
+  sample: {
+    type: Boolean
+  }
+}
+
+export class CustomInput {
+  public mask:any
+  public sample:any
+  public focused=ref(false)
+  public input = ref()
+  public value:any
+  public errorMessage:any
+  public notify:any
+  public classes:any
+  private props:any
+  public visible=ref()
+
+  constructor (props:any, optionsList:Array<InputOption>) {
+    this.props = props
+    this.create()
+    this.setClasses()
+    optionsList.forEach((item) => {
+      switch (item.name) {
+        case 'mask':
+          this.mask = this.useMask(item.params)
+          break
+        case 'sample':
+          this.sample = this.useSample()
+          break
+        case 'notify':
+          this.notify = this.useNotify()
+          break
       }
-      return pattern
-    }
-    return null
-  })
-}
-
-export function useFocus () {
-  const focused = ref(false)
-  const input = ref()
-
-  const focus = () => {
-    focused.value = true
-    input.value.focus()
+    })
   }
 
-  const unfocus = () => {
-    focused.value = false
-    input.value.blur()
+  private create () {
+    const { value, errorMessage } = useField(this.props.name, this.props.rule)
+    this.value = value
+    this.errorMessage = errorMessage
   }
 
-  return { focused, input, focus, unfocus }
-}
+  private setClasses () {
+    this.classes = computed(() => {
+      return [
+        this.focused.value ? 'focused' : '',
+        this.notify.value ? `${this.notify.value.type}` : '',
+        this.props.theme ? this.props.theme : ''
+      ]
+    })
+  }
 
-export function useSync (props:any) {
-  const { value, errorMessage } = useField(props.name, props.rule)
-  return { value, errorMessage }
+  private useMask (type:string | undefined) {
+    return computed(() => {
+      switch (type) {
+        case 'phone':
+          return '+# (###) ###-####'
+          break
+      }
+      return null
+    })
+  }
+
+  private useSample () {
+    return computed(() => {
+      if (this.props.type === 'phone') {
+        const pattern = '+1 (000) 000-0000'
+        if (this.props.modelValue) {
+          const numSymbol = this.props.modelValue.length
+          return ' '.repeat(numSymbol) + pattern.substring(numSymbol)
+        }
+        return pattern
+      }
+      return null
+    })
+  }
+
+  private useNotify () {
+    return computed(() => {
+      return this.errorMessage.value
+        ? new Notify({ text: this.errorMessage.value, type: 'danger' })
+        : (this.props.showSuccess && this.value.value)
+            ? new Notify({ type: 'success' })
+            : this.props.notification ? new Notify({ text: this.props.notification.text, type: this.props.notification.type }) : null
+    })
+  }
+
+  public focus=() => {
+    this.focused.value = true
+    this.input.value.focus()
+  }
+
+  public unfocus=() => {
+    this.focused.value = false
+    this.input.value.blur()
+  }
+
+  public clickSuffix=() => {
+    if (this.props.type === 'password') this.visible.value = !this.visible.value
+    else if (this.props.cleareble) this.value.value = undefined
+  }
 }

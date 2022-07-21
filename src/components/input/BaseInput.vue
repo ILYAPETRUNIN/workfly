@@ -1,11 +1,11 @@
 <template>
-    <div :class="getClass" class="base-input light">
+    <div :class="classes" class="base-input light">
         <div class="base-input__name">
           <label :for="name">{{label}}<span v-if="required">*</span></label>
         </div>
         <div @click="focus" class="base-input__wrapper">
           <slot name="icon-prefix"></slot>
-            <pre v-if="sample" class="base-input__placeholder">{{getSample}}</pre>
+            <pre v-if="sample" class="base-input__placeholder">{{sample}}</pre>
             <input
             :id="name"
             v-model='value'
@@ -16,17 +16,15 @@
             @blur="unfocus"
             :class="{'base-input__input_password':visible}"
             class="base-input__input"/>
-          <div @click="clickSuffix" class="base-input__suffix">
             <slot name="icon-suffix">
                     <transition name="animate-icon">
-                      <svg-icon v-if="type=='password'" class="base__input__icon base-input__icon_clicable" :name='`eye${visible?"_closed":""}`'/>
-                      <svg-icon v-else-if="cleareble" class="base-input__icon base-input__icon_clicable"  name='close'/>
-                      <div v-else-if="notify?.type" class="base-input__icon">
+                      <svg-icon @click="clickSuffix" v-if="type=='password'" class="base__input__icon base-input__icon_clicable base-input__suffix" :name='`eye${visible?"_closed":""}`'/>
+                      <svg-icon @click="clickSuffix" v-else-if="cleareble" class="base-input__icon base-input__icon_clicable base-input__suffix"  name='close'/>
+                      <div @click="clickSuffix" v-else-if="notify?.type" class="base-input__icon base-input__suffix">
                           <svg-icon :name='notify.type'/>
                       </div>
                     </transition>
             </slot>
-          </div>
 
         </div>
         <div class="base-input__notify">
@@ -38,103 +36,24 @@
 </template>
 
 <script lang="ts">
-import maska, { useMask, useFocus, useSync, useSample } from '@/composition/input'
-import Notify, { NotifyInterface } from '@/composition/notify'
+import maska, { CustomInput, props } from '@/composition/input'
 
-import { defineComponent, PropType, computed, ref } from 'vue'
+import { defineComponent } from 'vue'
 
 export default defineComponent({
   name: 'Base-input',
   emits: ['update:modelValue', 'clickSuffix'],
   directives: { maska },
-  props: {
-    modelValue: {
-      type: String
-    },
-    name: {
-      type: String,
-      default: 'name'
-    },
-    label: {
-      type: String
-    },
-    required: {
-      type: Boolean,
-      default: false
-    },
-    type: {
-      type: String
-    },
-    cleareble: {
-      type: Boolean
-    },
-    customMask: {
-      type: String
-    },
-    notification: {
-      type: Object as PropType<NotifyInterface>
-    },
-    showSuccess: {
-      type: Boolean
-    },
-    theme: {
-      type: String,
-      default: 'light'
-    },
-    rule: {
-      type: Object
-    },
-    sample: {
-      type: Boolean
-    }
-
-  },
+  props: { ...props },
 
   setup (props) {
-    const visible = ref()
+    const customInput = new CustomInput(props, [
+      { name: 'mask', params: props.type },
+      { name: 'sample' },
+      { name: 'notify' }
+    ])
 
-    const mask = useMask(props.type)
-
-    const { focused, input, focus, unfocus } = useFocus()
-
-    const { value, errorMessage } = useSync(props)
-
-    const notify = computed(() => {
-      return props.notification
-        ? new Notify({ text: props.notification.text, type: props.notification.type })
-        : errorMessage.value
-          ? new Notify({ text: errorMessage.value, type: 'danger' })
-          : (props.showSuccess && value.value) ? new Notify({ type: 'success' }) : null
-    })
-
-    const getClass = computed(() => {
-      return [
-        focused.value ? 'focused' : '',
-        notify.value ? `${notify.value.type}` : '',
-        props.theme ? props.theme : ''
-      ]
-    })
-
-    const getSample = props.sample ? useSample(props) : null
-
-    const clickSuffix = () => {
-      if (props.type === 'password') visible.value = !visible.value
-      else if (props.cleareble) value.value = undefined
-    }
-
-    return {
-      input,
-      getClass,
-      focus,
-      unfocus,
-      visible,
-      mask,
-      clickSuffix,
-      notify,
-      value,
-      errorMessage,
-      getSample
-    }
+    return { ...customInput }
   }
 })
 </script>

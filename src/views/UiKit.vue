@@ -2,10 +2,11 @@
     <div>
         <div class="ui-block">
             <div>
-                <base-input name="email" v-model="email" label="email" showSuccess/>
+                <base-input name="email" v-model="email" label="email" showSuccess :notification='{text:"Please, enter your work e-mail"}'/>
                 <base-input name="phone" v-model="phone" label="phone" type='phone' sample/>
                 <base-input name="password" v-model="password" label="password" type='password'/>
-                <base-input name="text" v-model="text" label="text" cleareble/>
+                <base-input name="text"  v-model="text" label="text" cleareble/>
+                <base-select name="select" v-model="select" label="select"/>
             </div>
             <div class="ui-block__column">
               <div class="ui-block__row">
@@ -41,6 +42,7 @@ export default defineComponent({
     const phone = ref()
     const password = ref()
     const text = ref()
+    const select = ref()
 
     const schema = yup.object({
       email: yup.string().required().email(),
@@ -56,7 +58,7 @@ export default defineComponent({
       input: ''
     })
 
-    return { form, code, email, phone, password, text }
+    return { form, code, email, phone, password, text, select }
   }
 })
 </script>
