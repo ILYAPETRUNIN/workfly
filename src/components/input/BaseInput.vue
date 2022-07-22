@@ -3,28 +3,30 @@
         <div class="base-input__name">
           <label :for="name">{{label}}<span v-if="required">*</span></label>
         </div>
-        <div @click="focus" class="base-input__wrapper">
+        <div v-click-away="unfocus" @click="focus" class="base-input__wrapper">
           <slot name="icon-prefix"></slot>
             <pre v-if="sample" class="base-input__placeholder">{{sample}}</pre>
             <input
+            :readonly="readonly"
             :id="name"
             v-model='value'
             v-maska="mask"
             :type='visible ? "password":"text"'
             ref="input"
             @focus="focus"
-            @blur="unfocus"
             :class="{'base-input__input_password':visible}"
             class="base-input__input"/>
-            <slot name="icon-suffix">
-                    <transition name="animate-icon">
-                      <svg-icon @click="clickSuffix" v-if="type=='password'" class="base__input__icon base-input__icon_clicable base-input__suffix" :name='`eye${visible?"_closed":""}`'/>
-                      <svg-icon @click="clickSuffix" v-else-if="cleareble" class="base-input__icon base-input__icon_clicable base-input__suffix"  name='close'/>
-                      <div @click="clickSuffix" v-else-if="notify?.type" class="base-input__icon base-input__suffix">
-                          <svg-icon :name='notify.type'/>
-                      </div>
-                    </transition>
-            </slot>
+            <div @click="clickSuffix" class='base-input__suffix'>
+              <slot name="icon-suffix">
+                      <transition name="animate-icon">
+                        <svg-icon  v-if="type=='password'" class="base__input__icon base-input__icon_clicable" :name='`eye${visible?"_closed":""}`'/>
+                        <svg-icon v-else-if="cleareble" class="base-input__icon base-input__icon_clicable"  name='close'/>
+                        <div v-else-if="notify?.type" class="base-input__icon">
+                            <svg-icon :name='notify.type'/>
+                        </div>
+                      </transition>
+              </slot>
+            </div>
 
         </div>
         <div class="base-input__notify">
@@ -42,18 +44,20 @@ import { defineComponent } from 'vue'
 
 export default defineComponent({
   name: 'Base-input',
-  emits: ['update:modelValue', 'clickSuffix'],
+  emits: ['update:modelValue', 'clickSuffix', 'focus'],
   directives: { maska },
   props: { ...props },
 
-  setup (props) {
-    const customInput = new CustomInput(props, [
+  setup (props, context) {
+    const customInput = new CustomInput(props, context, [
       { name: 'mask', params: props.type },
       { name: 'sample' },
       { name: 'notify' }
     ])
 
-    return { ...customInput }
+    const { mask, sample, focused, input, value, errorMessage, notify, classes, visible, focus, unfocus, clickSuffix } = customInput
+
+    return { mask, sample, focused, input, value, errorMessage, notify, classes, visible, focus, unfocus, clickSuffix }
   }
 })
 </script>

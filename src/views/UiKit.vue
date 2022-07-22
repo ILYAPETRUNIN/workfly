@@ -2,11 +2,11 @@
     <div>
         <div class="ui-block">
             <div>
-                <base-input name="email" v-model="email" label="email" showSuccess :notification='{text:"Please, enter your work e-mail"}'/>
-                <base-input name="phone" v-model="phone" label="phone" type='phone' sample/>
-                <base-input name="password" v-model="password" label="password" type='password'/>
-                <base-input name="text"  v-model="text" label="text" cleareble/>
-                <base-select name="select" v-model="select" label="select"/>
+                <base-input  name="email" v-model="email" label="email" showSuccess :notification='{text:"Please, enter your work e-mail"}'/>
+                <base-input  name="phone" v-model="phone" label="phone" type='phone' sample/>
+                <base-input  name="password" v-model="password" label="password" type='password'/>
+                <base-input  name="text"  v-model="text" label="text" cleareble/>
+                <base-select name="select" v-model="select" :items="items" label="select"/>
             </div>
             <div class="ui-block__column">
               <div class="ui-block__row">
@@ -34,6 +34,8 @@ import * as yup from 'yup'
 
 import { useForm } from 'vee-validate'
 
+const items = ['0-10', '10-20', '20-40', '50+']
+
 export default defineComponent({
   name: 'UiKit',
   setup () {
@@ -58,7 +60,7 @@ export default defineComponent({
       input: ''
     })
 
-    return { form, code, email, phone, password, text, select }
+    return { form, code, email, phone, password, text, select, items }
   }
 })
 </script>

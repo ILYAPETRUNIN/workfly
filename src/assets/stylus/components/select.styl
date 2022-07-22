@@ -5,9 +5,49 @@
 
 generateDefault($name)
   .{$name}
+    position relative
     &__icon
-      size(10px,5px)
+      size(24px,24px)
       cursor pointer
+      transition:transform 0.35s
+    &__menu
+      position absolute
+      border-radius: 8px;
+      width 100%
+      min-height 50px
+      margin-top -20px
+      z-index 999
+      &__item
+        flexy(flex-start,center)
+        padding 8px
+        height: 32px;
+        cursor pointer
+        border-radius: 8px;
+        &:hover
+          border-radius: 8px;
+  .show
+    .{$name}
+      &__icon
+        transform: rotate(180deg)
+
+setTheme($name,$theme)
+  .{$name}
+    &__icon
+      color:$theme.base.contrast
+    &__menu
+      background: white;
+      box-shadow: 0px 16px 24px rgba(2, 3, 3, 0.03), 0px 6px 30px rgba(2, 3, 3, 0.02), 0px 8px 10px rgba(2, 3, 3, 0.04);
+      .selected
+        background: lighten($theme.base.contrast,70)
+        color: $theme.base.base
+      &__item
+        &:hover
+          background: $theme.base.contrast
+          color: $theme.base.base
+
+setAnimation($name,$nameAnimate,$dir,$duration,$params=linear)
+  .{$name}-{$dir}-active
+    setAnimate($nameAnimate,$duration,$params,both)
 
 
 

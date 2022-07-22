@@ -48,6 +48,9 @@ export const props = {
   },
   sample: {
     type: Boolean
+  },
+  readonly: {
+    type: Boolean
   }
 }
 
@@ -60,11 +63,15 @@ export class CustomInput {
   public errorMessage:any
   public notify:any
   public classes:any
-  private props:any
   public visible=ref()
 
-  constructor (props:any, optionsList:Array<InputOption>) {
+  private props:any
+  private context:any
+
+  constructor (props:any, context:any, optionsList:Array<InputOption>) {
     this.props = props
+    this.context = context
+
     this.create()
     this.setClasses()
     optionsList.forEach((item) => {
@@ -134,6 +141,7 @@ export class CustomInput {
   }
 
   public focus=() => {
+    this.context.emit('focus')
     this.focused.value = true
     this.input.value.focus()
   }
@@ -144,6 +152,7 @@ export class CustomInput {
   }
 
   public clickSuffix=() => {
+    this.focus()
     if (this.props.type === 'password') this.visible.value = !this.visible.value
     else if (this.props.cleareble) this.value.value = undefined
   }
